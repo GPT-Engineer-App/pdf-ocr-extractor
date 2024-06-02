@@ -1,0 +1,42 @@
+import pdfplumber
+import pandas as pd
+
+# Path to the PDF file
+pdf_path = r'D:\TIMG\screenshot_1.pdf'
+
+# Path to save the Excel file
+excel_path = r'D:\TIMG\recognized_text.xlsx'
+
+def pdf_to_text(pdf_path):
+    recognized_text = []
+
+    # Open the PDF file
+    with pdfplumber.open(pdf_path) as pdf:
+        # Iterate through each page
+        for page in pdf.pages:
+            text = page.extract_text()
+            recognized_text.append(text)
+
+    return recognized_text
+
+def save_to_excel(text_list, excel_path):
+    # Create a DataFrame
+    df = pd.DataFrame({'Recognized Text': text_list})
+
+    # Save the DataFrame to an Excel file
+    df.to_excel(excel_path, index=False)
+
+def main():
+    # Perform OCR on the PDF
+    recognized_text = pdf_to_text(pdf_path)
+
+    # Print the recognized text
+    for page_num, text in enumerate(recognized_text):
+        print(f"Page {page_num + 1}:\n{text}\n")
+
+    # Save the recognized text to an Excel file
+    save_to_excel(recognized_text, excel_path)
+    print(f"Recognized text saved to {excel_path}")
+
+if __name__ == "__main__":
+    main()
